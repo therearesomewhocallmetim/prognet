@@ -1,13 +1,17 @@
+import sys
+
 from aiohttp import web
 from polls.routes import setup_routes
-from polls.settings import config, BASE_DIR
+from polls.settings import BASE_DIR, get_real_config
 from polls.db import close_pg, init_pg
 
 import aiohttp_jinja2
 import jinja2
 
+config_files = sys.argv[1:]
+
 app = web.Application()
-app['config'] = config
+app['config'] = get_real_config('polls.yaml', *config_files)
 
 aiohttp_jinja2.setup(
     app, loader=jinja2.FileSystemLoader(str(BASE_DIR / 'polls' / 'templates')))
