@@ -118,7 +118,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.10"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "A Python utility / library to sort Python imports."
 name = "isort"
 optional = false
@@ -237,7 +237,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "badea1c5db90c96f0ad613fa6309f62933e6f5ef75ea02f59ae9816af9099c04"
+content-hash = "c0bacd0b7e002020358ece4367e29993de56ae606a5bad69734a1484e3970ec6"
 python-versions = "^3.8"
 
 [metadata.files]

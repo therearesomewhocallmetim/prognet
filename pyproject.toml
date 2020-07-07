@@ -13,9 +13,9 @@ trafaret-config = "^2.0.2"
 pyyaml = "^5.3.1"
 aiohttp-security = "^0.4.0"
 aiohttp-session = "^2.9.0"
-isort = "^5.0.4"
 
 [tool.poetry.dev-dependencies]
+isort = "^5.0.4"
 
 [build-system]
 requires = ["poetry>=0.12"]
