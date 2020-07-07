@@ -1,14 +1,16 @@
+import hashlib
+
 from sqlalchemy import create_engine, MetaData
 
 from polls.settings import config
-from polls.db import question, choice
+from polls.db import question, choice, users
 
 
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 
 def create_tables(engine):
     meta = MetaData()
-    meta.create_all(bind=engine, tables=[question, choice])
+    meta.create_all(bind=engine, tables=[question, choice, users])
 
 def sample_data(engine):
     conn = engine.connect()
@@ -19,6 +21,9 @@ def sample_data(engine):
         {'choice_text': 'Not much', 'votes': 0, 'question_id': 1},
         {'choice_text': 'The sky', 'votes': 0, 'question_id': 1},
         {'choice_text': 'Just hacking again', 'votes': 0, 'question_id': 1},
+    ])
+    conn.execute(users.insert(), [
+        {'login': 'admin', 'password': hashlib.sha3_256('password'.encode()).hexdigest()}
     ])
     conn.close()
 

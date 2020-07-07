@@ -21,6 +21,12 @@ choice = Table(
     Column(
         'question_id', Integer, ForeignKey('question.id', ondelete='CASCADE')))
 
+users = Table(
+    'users', meta,
+    Column('id', Integer, primary_key=True),
+    Column('login', String(200), nullable=False, unique=True),
+    Column('password', String(200), nullable=False))
+
 
 async def init_pg(app):
     conf = app['config']['postgres']
