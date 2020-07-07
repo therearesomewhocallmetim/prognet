@@ -30,6 +30,20 @@ jinja2 = ">=2.10.1"
 
 [[package]]
 category = "main"
+description = "security for aiohttp.web"
+name = "aiohttp-security"
+optional = false
+python-versions = "*"
+version = "0.4.0"
+
+[package.dependencies]
+aiohttp = ">=3.2.0"
+
+[package.extras]
+session = ["aiohttp-session"]
+
+[[package]]
+category = "main"
 description = "Postgres integration with asyncio."
 name = "aiopg"
 optional = false
@@ -193,7 +207,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "49cca6a0ded0933f2858aaadb5264c7cd372492bfd361db6d73036086de483d1"
+content-hash = "fe394d4b534e804a181c987809a2b640fd6e7c07ad6c03d0631eae7ffdeb389f"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -214,6 +228,10 @@ aiohttp = [
 aiohttp-jinja2 = [
     {file = "aiohttp-jinja2-1.2.0.tar.gz", hash = "sha256:2dfe29cfd278d07cd0a851afb98471bc8ce2a830968443e40d67636f3c035d79"},
     {file = "aiohttp_jinja2-1.2.0-py3-none-any.whl", hash = "sha256:3b4dfe1bfd5542e254a769c18cb58d62f7f92755fec127e38d0da3436900b240"},
+]
+aiohttp-security = [
+    {file = "aiohttp-security-0.4.0.tar.gz", hash = "sha256:40d4bb150454e392c2dfa3620f6eab28e140e94cf0c2d3b4bf43aef653ec9405"},
+    {file = "aiohttp_security-0.4.0-py3-none-any.whl", hash = "sha256:0bd0ffbe2195c6f79378f24fb89fa19de62c747ab8f1c4df690fada7f8b45834"},
 ]
 aiopg = [
     {file = "aiopg-1.0.0-py3-none-any.whl", hash = "sha256:5da7763028b735ebc4c2980ba39ef1ce4f48df1fc05900e036674edd50f0727c"},
