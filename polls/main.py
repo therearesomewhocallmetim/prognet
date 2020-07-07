@@ -20,7 +20,9 @@ app = web.Application(middlewares=[middleware])
 app['config'] = get_real_config('polls.yaml', *config_files)
 
 aiohttp_jinja2.setup(
-    app, loader=jinja2.FileSystemLoader(str(BASE_DIR / 'polls' / 'templates')))
+    app, loader=jinja2.FileSystemLoader([
+        str(BASE_DIR / 'polls' / 'templates'),
+        str(BASE_DIR / 'auth' / 'templates')]))
 
 setup_routes(app)
 

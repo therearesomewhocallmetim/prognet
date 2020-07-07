@@ -1,4 +1,5 @@
-from polls.views import index, login_get, login_post, logout
+from auth.views import login_get, login_post, logout
+from polls.views import index
 
 
 def setup_routes(app):
