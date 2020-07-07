@@ -3,7 +3,9 @@ import hashlib
 from sqlalchemy import MetaData, create_engine
 
 from polls.db import choice, question, users
-from polls.settings import config
+from polls.settings import get_real_config
+
+config = get_real_config('polls.yaml')
 
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 
