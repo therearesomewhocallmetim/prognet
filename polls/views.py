@@ -3,7 +3,7 @@ import logging
 
 import aiohttp_jinja2
 from aiohttp import web
-from aiohttp_security import authorized_userid, check_authorized, remember
+from aiohttp_security import authorized_userid, check_authorized, remember, forget
 from sqlalchemy import text
 
 from . import db
@@ -11,7 +11,10 @@ from . import db
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    await check_authorized(request)
+    try:
+        await check_authorized(request)
+    except web.HTTPUnauthorized:
+        raise web.HTTPFound('/login')
     user = await authorized_userid(request)
     async with request.app['db'].acquire() as conn:
         cursor = await conn.execute(db.question.select())
@@ -39,3 +42,9 @@ async def login_post(request):
 @aiohttp_jinja2.template('login.html')
 async def login_get(request):
     return {}
+
+
+async def logout(request):
+    user = await authorized_userid(request)
+    await forget(request, user)
+    raise web.HTTPFound('/')
