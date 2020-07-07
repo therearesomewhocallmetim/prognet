@@ -1,7 +1,8 @@
 import logging
 
 from aiopg import sa
-from sqlalchemy import MetaData, Integer, Column, Table, String, Date, ForeignKey
+from sqlalchemy import (
+    Column, Date, ForeignKey, Integer, MetaData, String, Table)
 
 __all__ = ['question', 'choice']
 
