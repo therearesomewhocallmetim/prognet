@@ -1,21 +1,19 @@
-version: "3.3"
+version: "3.7"
 services:
   postgres:
     image: postgres:latest
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_PASSWORD=gthtdjl
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./.data/postgresql:/var/lib/postgresql/data
     networks:
       - database
 
   app:
-    image: 961070163841.dkr.ecr.us-east-2.amazonaws.com/kursach:latest
+    build:
+      context: .
     ports:
-      - "80:3000"
+      - "3000:3000"
     depends_on:
       - postgres
     networks:
