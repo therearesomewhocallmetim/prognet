@@ -1,8 +1,8 @@
-postgres:
-  database: aiohttpdemo_polls
-  user: aiohttpdemo_user
-  password: aiohttpdemo_pass
-  host: postgres
-  port: 5432
+db:
+  database: prognet
+  user: root
+  password: dude
+  host: database
+  port: 3306
   minsize: 1
   maxsize: 5

@@ -1,36 +1,41 @@
+import asyncio
 import hashlib
 
-from sqlalchemy import MetaData, create_engine
+import aiomysql
 
-from polls.db import choice, question, users
 from polls.settings import get_real_config
 
-config = get_real_config('polls.yaml')
+conf = get_real_config('polls_local.yaml')['db']
 
-DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 
-def create_tables(engine):
-    meta = MetaData()
-    meta.create_all(bind=engine, tables=[question, choice, users])
+async def create_tables(conn):
+    async with conn.cursor() as cur:
+        await cur.execute(
+            """CREATE TABLE IF NOT EXISTS users (
+               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+               login VARCHAR(255) UNIQUE KEY not null, 
+               password VARCHAR(255) NOT NULL
+            );""")
 
-def sample_data(engine):
-    conn = engine.connect()
-    conn.execute(question.insert(), [
-        {'question_text': "What's new?", 'pub_date': '2020-01-01 00:00:00'}
-    ])
-    conn.execute(choice.insert(), [
-        {'choice_text': 'Not much', 'votes': 0, 'question_id': 1},
-        {'choice_text': 'The sky', 'votes': 0, 'question_id': 1},
-        {'choice_text': 'Just hacking again', 'votes': 0, 'question_id': 1},
-    ])
-    conn.execute(users.insert(), [
-        {'login': 'admin', 'password': hashlib.sha3_256('password'.encode()).hexdigest()}
-    ])
+
+async def sample_data(conn):
+    async with conn.cursor() as cur:
+        await cur.execute(
+            f"""INSERT INTO users (login, password) 
+                values ('admin', '{hashlib.sha3_256('password'.encode()).hexdigest()}');""")
+        await conn.commit()
+
+
+async def main():
+    conn = await aiomysql.connect(
+        host=conf['host'], port=conf['port'], user=conf['user'],
+        password=conf['password'], db=conf['database'])
+
+    await create_tables(conn)
+    await sample_data(conn)
     conn.close()
 
-if __name__ == '__main__':
-    db_url = DSN.format(**config['postgres'])
-    engine = create_engine(db_url)
-    create_tables(engine)
-    sample_data(engine)
 
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

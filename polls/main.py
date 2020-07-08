@@ -8,7 +8,7 @@ from aiohttp_security import setup as setup_security
 from aiohttp_session import SimpleCookieStorage, session_middleware
 
 from auth.policies import SimpleAuthPolicy
-from polls.db import close_pg, init_pg
+from polls.db import close_mysql, init_mysql
 from polls.routes import setup_routes
 from polls.settings import BASE_DIR, get_real_config
 
@@ -17,6 +17,7 @@ config_files = sys.argv[1:]
 middleware = session_middleware(SimpleCookieStorage())
 
 app = web.Application(middlewares=[middleware])
+
 app['config'] = get_real_config('polls.yaml', *config_files)
 
 aiohttp_jinja2.setup(
@@ -26,8 +27,8 @@ aiohttp_jinja2.setup(
 
 setup_routes(app)
 
-app.on_startup.append(init_pg)
-app.on_cleanup.append(close_pg)
+app.on_startup.append(init_mysql)
+app.on_cleanup.append(close_mysql)
 
 # security
 policy = SessionIdentityPolicy()

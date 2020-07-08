@@ -1,12 +1,12 @@
 {% set title="Main" %}
 
-{% if questions %}
+{% if users %}
     <ul>
-        {% for question in questions %}
-            <li>{{ question.question_text }}</li>
+        {% for user in users %}
+            <li>{{ user.login }}</li>
         {% endfor %}
 
     </ul>
 {% else %}
-    <p>No questions are available</p>
+    <p>There are no users in our network yet</p>
 {% endif %}
