@@ -16,6 +16,18 @@ async def create_tables(conn):
                login VARCHAR(255) UNIQUE KEY not null, 
                password VARCHAR(255) NOT NULL
             );""")
+        await cur.execute("""
+        CREATE TABLE IF NOT EXISTS profiles (
+            id BIGINT PRIMARY KEY AUTO_INCREMENT,
+            user BIGINT REFERENCES users(id) ON DELETE CASCADE,
+            first_name VARCHAR(255) NOT NULL, 
+            last_name VARCHAR(255) NOT NULL, 
+            date_of_birth DATE,
+            sex ENUM('male', 'female', 'other'), 
+            interests LONGTEXT,
+            city VARCHAR(255)
+        )
+        """)
 
 
 async def sample_data(conn):

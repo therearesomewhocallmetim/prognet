@@ -23,10 +23,10 @@ async def login_post(request):
         data = await request.post()
         login = data['login']
         password = hashlib.sha3_256(data['password'].encode()).hexdigest()
-        statement = f"""SELECT login from users where login='{login}' and password='{password}';"""
+        statement = f"""SELECT id from users where login='{login}' and password='{password}';"""
         records = await select(conn, statement)
         redirect_response = web.HTTPFound('/')
-        await remember(request, redirect_response, records[0]['login'])
+        await remember(request, redirect_response, str(records[0]['id']))
         raise redirect_response
 
 
@@ -59,10 +59,12 @@ async def register(request):
     async with request.app['db'].acquire() as conn:
         async with conn.cursor() as cur:
             try:
-                await cur.execute(statement, (login, password))
+                res = await cur.execute(statement, (login, password))
+                await cur.execute('SELECT LAST_INSERT_ID();')
+                last_id = await cur.fetchone()
                 await conn.commit()
                 redirect_response = web.HTTPFound('/')
-                await remember(request, redirect_response, login)
+                await remember(request, redirect_response, str(last_id))
                 raise redirect_response
             except IntegrityError as e:
                 raise web.HTTPFound('/login')
