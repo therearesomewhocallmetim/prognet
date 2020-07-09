@@ -19,7 +19,7 @@ async def create_tables(conn):
         await cur.execute("""
         CREATE TABLE IF NOT EXISTS profiles (
             id BIGINT PRIMARY KEY AUTO_INCREMENT,
-            user BIGINT REFERENCES users(id) ON DELETE CASCADE,
+            user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
             first_name VARCHAR(255) NOT NULL, 
             last_name VARCHAR(255) NOT NULL, 
             date_of_birth DATE,

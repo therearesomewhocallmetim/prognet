@@ -1,0 +1,15 @@
+{% set title="Profile form" %}
+
+<form action="/profile" method="post">
+    <input type="text" name="first_name" placeholder="first name">
+    <input type="text" name="last_name" placeholder="last name">
+    <select name="gender">
+        <option value="male">male</option>
+        <option value="female">female</option>
+        <option value="other">other</option>
+    </select>
+    <textarea name="interests"></textarea>
+    <input type="text" name="city" placeholder="city"/>
+
+    <input type="submit" value=">>>" />
+</form>
