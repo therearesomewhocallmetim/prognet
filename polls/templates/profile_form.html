@@ -11,6 +11,7 @@
         <option value="female"{% if profile.sex=='female' %} selected="selected"{% endif %}>female</option>
         <option value="other"{% if profile.sex=='other' %} selected="selected"{% endif %}>other</option>
     </select></p>
+    <p>Date of birth (year-month-day, 2000-1-13): <input type="date" name="birth" value="{{ profile.date_of_birth }}" /></p>
     <p>Interests: <textarea name="interests">{{ profile.interests }}</textarea></p>
     <p>City: <input type="text" name="city" placeholder="city" value="{{ profile.city }}" /></p>
 

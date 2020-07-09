@@ -21,12 +21,12 @@ class Profile:
     async def save(conn, data):
         statement = """
             INSERT INTO profiles 
-                (user_id, first_name, last_name, sex, interests, city) 
+                (user_id, first_name, last_name, sex, interests, city, date_of_birth) 
             values 
-                (%(user_id)s, %(first_name)s, %(last_name)s, %(sex)s, %(interests)s, %(city)s)
+                (%(user_id)s, %(first_name)s, %(last_name)s, %(sex)s, %(interests)s, %(city)s, %(date_of_birth)s)
             ON DUPLICATE KEY UPDATE
                 user_id=%(user_id)s, first_name=%(first_name)s, last_name=%(last_name)s,
-                sex=%(sex)s, interests=%(interests)s, city=%(city)s;
+                sex=%(sex)s, interests=%(interests)s, city=%(city)s, date_of_birth=%(date_of_birth)s;
             """
 
         async with conn.cursor() as cur:
@@ -34,5 +34,5 @@ class Profile:
                 statement, args=dict(
                     user_id=data['user_id'], first_name=data['first_name'],
                     last_name=data['last_name'], sex=data['gender'],
-                    interests=data['interests'], city=data['city']))
+                    interests=data['interests'], city=data['city'], date_of_birth=data['birth']))
             await conn.commit()

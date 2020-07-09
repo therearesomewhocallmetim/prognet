@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 import aiohttp_jinja2
 from aiohttp import web
 from aiohttp_security import authorized_userid, check_authorized
@@ -43,6 +45,11 @@ async def profile_post(request):
     data = await request.post()
     user_id = await login_required(request)
     data = dict(data.items())
+    try:
+        data['birth'] = datetime.strptime(data['birth'], '%Y-%m-%d').date()
+    except ValueError:
+        data['birth'] = None
+
     data['user_id'] = user_id
     async with request.app['db'].acquire() as conn:
         await Profile.save(conn, data)
@@ -56,6 +63,9 @@ async def profile_detail(request):
         user_id = int(request.match_info['user_id'])
         async with request.app['db'].acquire() as conn:
             profile = await Profile.get_by_user_id(conn, user_id)
+            if profile['date_of_birth']:
+                age = (date.today() - profile['date_of_birth']).days // 365
+                profile['age'] = age
             return {'profile': profile}
 
     except ValueError:
