@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body>
+  <p><a href="/">profiles</a> | <a href="/logout">logout</a> | <a href="/profile">edit profile</a></p>
+  <hr />
+
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+      {% block footer %}
+      {% endblock %}
+    </div>
+  </body>
+</html>

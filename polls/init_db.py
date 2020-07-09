@@ -17,16 +17,18 @@ async def create_tables(conn):
                password VARCHAR(255) NOT NULL
             );""")
         await cur.execute("""
-        CREATE TABLE IF NOT EXISTS profiles (
-            id BIGINT PRIMARY KEY AUTO_INCREMENT,
-            user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-            first_name VARCHAR(255) NOT NULL, 
-            last_name VARCHAR(255) NOT NULL, 
-            date_of_birth DATE,
-            sex ENUM('male', 'female', 'other'), 
-            interests LONGTEXT,
-            city VARCHAR(255)
-        )
+            CREATE TABLE `profiles` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `user_id` bigint DEFAULT NULL,
+              `first_name` varchar(255) NOT NULL,
+              `last_name` varchar(255) NOT NULL,
+              `date_of_birth` date DEFAULT NULL,
+              `sex` enum('male','female','other') DEFAULT NULL,
+              `interests` longtext,
+              `city` varchar(255) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `user_id` (`user_id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
         """)
 
 

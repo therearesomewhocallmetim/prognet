@@ -1,15 +1,19 @@
-{% set title="Profile form" %}
+{% extends "base.html" %}
+{% block title %}{{ profile.first_name }} {{ profile.last_name}}{% endblock %}
+
+{% block content %}
 
 <form action="/profile" method="post">
-    <input type="text" name="first_name" placeholder="first name" value="{{ profile.first_name }}">
-    <input type="text" name="last_name" placeholder="last name" value="{{ profile.last_name }}">
-    <select name="gender">
+    <p>First name: <input type="text" name="first_name" placeholder="first name" value="{{ profile.first_name }}"></p>
+    <p>Last name: <input type="text" name="last_name" placeholder="last name" value="{{ profile.last_name }}"></p>
+    <p>Gender: <select name="gender">
         <option value="male"{% if profile.sex=='male' %} selected="selected"{% endif %}>male</option>
         <option value="female"{% if profile.sex=='female' %} selected="selected"{% endif %}>female</option>
         <option value="other"{% if profile.sex=='other' %} selected="selected"{% endif %}>other</option>
-    </select>
-    <textarea name="interests">{{ profile.interests }}</textarea>
-    <input type="text" name="city" placeholder="city" value="{{ profile.city }}" />
+    </select></p>
+    <p>Interests: <textarea name="interests">{{ profile.interests }}</textarea></p>
+    <p>City: <input type="text" name="city" placeholder="city" value="{{ profile.city }}" /></p>
 
-    <input type="submit" value=">>>" />
+    <p><input type="submit" value=">>>" /></p>
 </form>
+{% endblock %}

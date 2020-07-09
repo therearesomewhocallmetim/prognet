@@ -1,12 +1,15 @@
-{% set title="Main" %}
+{% extends "base.html" %}
+{% block title %}Profiles{% endblock %}
 
-{% if users %}
-    <ul>
-        {% for user in users %}
-            <li>{{ user.login }}</li>
-        {% endfor %}
+{% block content %}
+    {% if profiles %}
+        <ul>
+            {% for profile in profiles %}
+            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }}</a></li>
+            {% endfor %}
 
-    </ul>
-{% else %}
-    <p>There are no users in our network yet</p>
-{% endif %}
+        </ul>
+    {% else %}
+        <p>There are no users in our network yet</p>
+    {% endif %}
+{% endblock %}
