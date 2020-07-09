@@ -1,14 +1,13 @@
 version: "3.3"
 services:
-  postgres:
-    image: postgres:latest
+  database:
+    image: mysql:latest
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_PASSWORD=gthtdjl
+      MYSQL_ROOT_PASSWORD: dude
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - ./.data/postgresql:/var/lib/postgresql/data
+      - ./.data/mysql:/var/lib/mysql
     networks:
       - database
 
@@ -17,7 +16,7 @@ services:
     ports:
       - "80:3000"
     depends_on:
-      - postgres
+      - database
     networks:
       - database
 

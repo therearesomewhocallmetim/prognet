@@ -5,7 +5,7 @@ import aiomysql
 
 from polls.settings import get_real_config
 
-conf = get_real_config('polls_local.yaml')['db']
+conf = get_real_config('polls.yaml')['db']
 
 
 async def create_tables(conn):
