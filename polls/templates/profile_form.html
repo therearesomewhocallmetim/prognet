@@ -1,15 +1,15 @@
 {% set title="Profile form" %}
 
 <form action="/profile" method="post">
-    <input type="text" name="first_name" placeholder="first name">
-    <input type="text" name="last_name" placeholder="last name">
+    <input type="text" name="first_name" placeholder="first name" value="{{ profile.first_name }}">
+    <input type="text" name="last_name" placeholder="last name" value="{{ profile.last_name }}">
     <select name="gender">
-        <option value="male">male</option>
-        <option value="female">female</option>
-        <option value="other">other</option>
+        <option value="male"{% if profile.sex=='male' %} selected="selected"{% endif %}>male</option>
+        <option value="female"{% if profile.sex=='female' %} selected="selected"{% endif %}>female</option>
+        <option value="other"{% if profile.sex=='other' %} selected="selected"{% endif %}>other</option>
     </select>
-    <textarea name="interests"></textarea>
-    <input type="text" name="city" placeholder="city"/>
+    <textarea name="interests">{{ profile.interests }}</textarea>
+    <input type="text" name="city" placeholder="city" value="{{ profile.city }}" />
 
     <input type="submit" value=">>>" />
 </form>

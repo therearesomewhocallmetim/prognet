@@ -2,6 +2,7 @@ import aiohttp_jinja2
 from aiohttp import web
 from aiohttp_security import authorized_userid, check_authorized
 
+from polls.models import Profile
 from utils import select
 
 
@@ -27,14 +28,19 @@ async def index(request):
 
 
 async def check_has_profile(user_id, conn):
-    user = await select(conn, "SELECT * FROM profiles WHERE user_id=%s", int(user_id))
-    if not user:
+    profile = await Profile.get_by_user_id(conn, user_id)
+    if not profile:
         raise web.HTTPFound('/profile')
 
 
 @aiohttp_jinja2.template('profile_form.html')
 async def profile_get(request):
-    pass
+    async with request.app['db'].acquire() as conn:
+        user_id = await login_required(request)
+        profile = await Profile.get_by_user_id(conn, user_id)
+        if profile:
+            return {'profile': profile[0]}
+        return {'profile': None}
 
 
 async def profile_post(request):
