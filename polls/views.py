@@ -63,6 +63,8 @@ async def profile_detail(request):
         user_id = int(request.match_info['user_id'])
         async with request.app['db'].acquire() as conn:
             profile = await Profile.get_by_user_id(conn, user_id)
+            if not profile:
+                raise web.HTTPNotFound()
             if profile['date_of_birth']:
                 age = (date.today() - profile['date_of_birth']).days // 365
                 profile['age'] = age
