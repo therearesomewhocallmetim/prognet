@@ -23,8 +23,8 @@ async def login_post(request):
         data = await request.post()
         login = data['login']
         password = hashlib.sha3_256(data['password'].encode()).hexdigest()
-        statement = f"""SELECT id from users where login='{login}' and password='{password}';"""
-        records = await select(conn, statement)
+        statement = f"""SELECT id from users where login=%(login)s and password=%(password)s;"""
+        records = await select(conn, statement, args={'login': login, 'password': password})
         if records:
             redirect_response = web.HTTPFound('/')
             await remember(request, redirect_response, str(records[0]['id']))

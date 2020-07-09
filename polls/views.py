@@ -53,7 +53,7 @@ async def profile_post(request):
     data['user_id'] = user_id
     async with request.app['db'].acquire() as conn:
         await Profile.save(conn, data)
-        conn.commit()
+        await conn.commit()
     raise web.HTTPFound('/')
 
 
