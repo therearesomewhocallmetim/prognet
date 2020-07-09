@@ -58,5 +58,5 @@ async def profile_detail(request):
             profile = await Profile.get_by_user_id(conn, user_id)
             return {'profile': profile}
 
-    except ValueError as e:
+    except ValueError:
         raise web.HTTPNotFound()

@@ -61,12 +61,12 @@ async def register(request):
     async with request.app['db'].acquire() as conn:
         async with conn.cursor() as cur:
             try:
-                res = await cur.execute(statement, (login, password))
+                await cur.execute(statement, (login, password))
                 await cur.execute('SELECT LAST_INSERT_ID();')
-                last_id = await cur.fetchone()
+                last_id = (await cur.fetchone())[0]
                 await conn.commit()
                 redirect_response = web.HTTPFound('/')
                 await remember(request, redirect_response, str(last_id))
                 raise redirect_response
-            except IntegrityError as e:
+            except IntegrityError:
                 raise web.HTTPFound('/login')
