@@ -1,11 +1,6 @@
-import asyncio
 import hashlib
 
-import aiomysql
-
-from _root.settings import get_real_config
-
-conf = get_real_config('polls.yaml')['db']
+from _root.db import init_mysql, close_mysql
 
 
 async def create_tables(conn):
@@ -40,16 +35,11 @@ async def sample_data(conn):
         await conn.commit()
 
 
-async def main():
-    conn = await aiomysql.connect(
-        host=conf['host'], port=conf['port'], user=conf['user'],
-        password=conf['password'], db=conf['database'])
+async def main(app):
+    await init_mysql(app)
+    async with app['db'].acquire() as conn:
+        await create_tables(conn)
+        await sample_data(conn)
+        conn.close()
+    await close_mysql(app)
 
-    await create_tables(conn)
-    await sample_data(conn)
-    conn.close()
-
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())

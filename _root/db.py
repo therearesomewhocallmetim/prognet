@@ -12,4 +12,3 @@ async def init_mysql(app):
 
 async def close_mysql(app):
     app['db'].close()
-    await aiomysql.ensure_closed()
