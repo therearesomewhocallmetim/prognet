@@ -10,18 +10,15 @@ from aiohttp_session import SimpleCookieStorage, session_middleware
 from auth import app as auth
 from auth.policies import SimpleAuthPolicy
 from polls import app as polls
-from polls.db import close_mysql, init_mysql
-from polls.settings import BASE_DIR, get_real_config
+from _root.db import close_mysql, init_mysql
+from _root.settings import get_real_config
 
 # thing
 def plugin_app(app, prefix, nested):
     async def set_db(a):
-        print(a.name)
         nested['db'] = a['db']
-
     app.on_startup.append(set_db)
     app.add_subapp(prefix, nested)
-
 # / end of thing
 
 
@@ -41,10 +38,7 @@ plugin_app(app, '/profiles/', polls.get_app(app['config']))
 plugin_app(app, '/auth/', auth.get_app(app['config']))
 
 aiohttp_jinja2.setup(
-    app, loader=jinja2.FileSystemLoader([
-        str(BASE_DIR / 'polls' / 'templates'),
-        str(BASE_DIR / 'auth' / 'templates')]))
-
+    app, loader=jinja2.FileSystemLoader(map(str, app['config']['template_dirs'])))
 
 
 # security

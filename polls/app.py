@@ -1,13 +1,16 @@
+from pathlib import Path
+
 from aiohttp import web
 
-from polls.routes import setup_routes
-
+from .routes import setup_routes
 
 
 def get_app(config):
-    polls = web.Application()
-    polls.name = 'polls'
-    polls['config'] = {}
-    polls['config'].update(config)
-    setup_routes(polls)
-    return polls
+    parent = Path(__file__).parent
+    app = web.Application()
+    app['config'] = {}
+    app.name = parent.name
+    config['template_dirs'].append(parent / 'templates')
+    app['config'].update(config)
+    setup_routes(app)
+    return app

@@ -2,8 +2,9 @@ import pathlib
 
 import yaml
 
-BASE_DIR = pathlib.Path(__file__).parent.parent
-config_dir = BASE_DIR / 'config'
+my_path = pathlib.Path(__file__).parent
+BASE_DIR = my_path.parent
+config_dir = my_path / 'config'
 
 
 def _get_config(path):
@@ -13,7 +14,7 @@ def _get_config(path):
 
 
 def get_real_config(*path):
-    config = {}
+    config = {'base_dir': BASE_DIR, 'template_dirs': []}
     for config_file in path:
         config_path = config_dir / config_file
         config.update(_get_config(config_path))
