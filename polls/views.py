@@ -11,7 +11,7 @@ async def login_required(request):
     try:
         await check_authorized(request)
     except web.HTTPUnauthorized:
-        raise web.HTTPFound('/login')
+        raise web.HTTPFound('/auth/login')
     user_id = await authorized_userid(request)
     return user_id
 
@@ -28,7 +28,7 @@ async def index(request):
 async def check_has_profile(user_id, conn):
     profile = await Profile.get_by_user_id(conn, user_id)
     if not profile:
-        raise web.HTTPFound('/profile')
+        raise web.HTTPFound('/profiles/me')
 
 
 @aiohttp_jinja2.template('profile_form.html')
@@ -54,7 +54,7 @@ async def profile_post(request):
     async with request.app['db'].acquire() as conn:
         await Profile.save(conn, data)
         await conn.commit()
-    raise web.HTTPFound('/')
+    raise web.HTTPFound('/profiles/')
 
 
 @aiohttp_jinja2.template('profile_detail.html')

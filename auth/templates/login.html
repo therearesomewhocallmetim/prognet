@@ -1,13 +1,13 @@
 {% set title="Login" %}
 <h1>Log in</h1>
-<form action="/login" method="POST">
+<form action="/auth/login" method="POST">
     <p><input type="text" placeholder="login" name="login" /></p>
     <p><input type="password" placeholder="password" name="password" /></p>
     <p><input type="submit" value=">>>" /></p>
 </form>
 
 <h1>Or sign up</h1>
-<form action="/register" method="POST">
+<form action="/auth/register" method="POST">
     <p><input type="text" placeholder="login" name="login" /></p>
     <p><input type="password" placeholder="password" name="password" /></p>
     <p><input type="password" placeholder="password" name="password2" /></p>

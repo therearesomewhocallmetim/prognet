@@ -12,7 +12,7 @@ from utils import select
 async def check_unauthed(request):
     try:
         await check_authorized(request)
-        raise web.HTTPFound('/')
+        raise web.HTTPFound('/profiles/')
     except web.HTTPUnauthorized:
         pass
 
@@ -26,9 +26,9 @@ async def login_post(request):
         statement = f"""SELECT id from users where login=%(login)s and password=%(password)s;"""
         records = await select(conn, statement, args={'login': login, 'password': password})
         if records:
-            redirect_response = web.HTTPFound('/')
+            redirect_response = web.HTTPFound('/profiles/')
             await remember(request, redirect_response, str(records[0]['id']))
-        redirect_response = web.HTTPFound('/login')
+        redirect_response = web.HTTPFound('/auth/login')
         raise redirect_response
 
 
@@ -36,7 +36,7 @@ async def login_post(request):
 async def login_get(request):
     try:
         await check_authorized(request)
-        raise web.HTTPFound('/')
+        raise web.HTTPFound('/profiles/')
     except web.HTTPUnauthorized:
         return {}
 
@@ -44,7 +44,7 @@ async def login_get(request):
 async def logout(request):
     user = await authorized_userid(request)
     await forget(request, user)
-    raise web.HTTPFound('/')
+    raise web.HTTPFound('/profiles/')
 
 
 async def register(request):
@@ -54,7 +54,7 @@ async def register(request):
     password = data['password']
     password2 = data['password2']
     if password != password2:
-        raise web.HTTPFound('/login')
+        raise web.HTTPFound('/auth/login')
     password = hashlib.sha3_256(password.encode()).hexdigest()
 
     statement = f"""INSERT INTO users (login, password) values (%s, %s);"""
@@ -65,8 +65,8 @@ async def register(request):
                 await cur.execute('SELECT LAST_INSERT_ID();')
                 last_id = (await cur.fetchone())[0]
                 await conn.commit()
-                redirect_response = web.HTTPFound('/')
+                redirect_response = web.HTTPFound('/profiles/')
                 await remember(request, redirect_response, str(last_id))
                 raise redirect_response
             except IntegrityError:
-                raise web.HTTPFound('/login')
+                raise web.HTTPFound('/auth/login')

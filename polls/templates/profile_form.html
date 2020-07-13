@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<form action="/profile" method="post">
+<form action="/profiles/me" method="post">
     <p>First name: <input type="text" name="first_name" placeholder="first name" value="{{ profile.first_name }}"></p>
     <p>Last name: <input type="text" name="last_name" placeholder="last name" value="{{ profile.last_name }}"></p>
     <p>Gender: <select name="gender">
