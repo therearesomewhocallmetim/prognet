@@ -72,3 +72,11 @@ async def profile_detail(request):
 
     except ValueError:
         raise web.HTTPNotFound()
+
+
+@aiohttp_jinja2.template('index.html')
+async def search_profiles(request):
+    async with request.app['db'].acquire() as conn:
+        params = dict(request.query)
+        profiles = await Profile.search(conn, params)
+        return {'profiles': profiles}

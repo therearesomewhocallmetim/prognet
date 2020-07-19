@@ -35,3 +35,11 @@ class Profile:
                     user_id=data['user_id'], first_name=data['first_name'],
                     last_name=data['last_name'], sex=data['gender'],
                     interests=data['interests'], city=data['city'], date_of_birth=data['birth']))
+
+    @staticmethod
+    async def search(conn, params):
+        for key, val in params.items():
+            params[key] = f'{val}%'
+
+        query = "SELECT * FROM profiles where first_name like %(first_name)s and last_name like %(last_name)s ORDER BY id"
+        return await select(conn, query, dict(params))
