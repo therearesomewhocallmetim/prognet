@@ -19,8 +19,8 @@ async def login_required(request):
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     async with request.app['db'].acquire() as conn:
-        user_id = await login_required(request)
-        await check_has_profile(user_id, conn)
+        # user_id = await login_required(request)
+        # await check_has_profile(user_id, conn)
         profiles = await Profile.get_all_names(conn)
         return {'profiles': profiles}
 

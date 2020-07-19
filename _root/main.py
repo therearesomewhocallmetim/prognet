@@ -13,6 +13,7 @@ from _root import init_db
 from _root.db import close_mysql, init_mysql
 from _root.settings import get_real_config
 from auth.policies import SimpleAuthPolicy
+from fake_data.gen import generate
 
 
 # thing
@@ -32,8 +33,8 @@ plugins = [
 
 def load_plugins(root):
     for application_name, prefix in plugins:
-        application_module = import_module(application_name)
-        application = application_module.app.get_app(root['config'])
+        application_module = import_module(f'{application_name}.app')
+        application = application_module.get_app(root['config'])
         plugin_app(root, prefix, application)
 
 
@@ -69,6 +70,14 @@ def create_db(ctx):
     app = ctx.obj['APP']
     loop = asyncio.get_event_loop()
     loop.run_until_complete(init_db.main(app))
+
+
+@cli.command()
+@click.pass_context
+def generate_fake_data(ctx):
+    app = ctx.obj['APP']
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(generate(app))
 
 
 @cli.command()

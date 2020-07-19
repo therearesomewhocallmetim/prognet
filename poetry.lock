@@ -144,6 +144,18 @@ test = ["pytest (>=3.6.0,<3.9.0 || >3.9.0,<3.9.1 || >3.9.1,<3.9.2 || >3.9.2)", "
 
 [[package]]
 category = "main"
+description = "Faker is a Python package that generates fake data for you."
+name = "faker"
+optional = false
+python-versions = ">=3.4"
+version = "4.1.1"
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+text-unidecode = "1.3"
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -213,6 +225,17 @@ cryptography = "*"
 
 [[package]]
 category = "main"
+description = "Extensions to the standard Python datetime module"
+name = "python-dateutil"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+version = "2.8.1"
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
+category = "main"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
@@ -226,6 +249,14 @@ name = "six"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "1.15.0"
+
+[[package]]
+category = "main"
+description = "The most basic Text::Unidecode port"
+name = "text-unidecode"
+optional = false
+python-versions = "*"
+version = "1.3"
 
 [[package]]
 category = "main"
@@ -264,7 +295,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "b0e4ea010a70c59e90d9e5a90eaf029cc71843eab7229acb5dc2aac0cb4618ee"
+content-hash = "5c28935661d9220990f3d6d994de3a5f255e992a724aea84bd0b4f097c3557b4"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -365,6 +396,10 @@ cryptography = [
     {file = "cryptography-2.9.2-cp38-cp38-win_amd64.whl", hash = "sha256:1dfa985f62b137909496e7fc182dac687206d8d089dd03eaeb28ae16eec8e7d5"},
     {file = "cryptography-2.9.2.tar.gz", hash = "sha256:a0c30272fb4ddda5f5ffc1089d7405b7a71b0b0f51993cb4e5dbb4590b2fc229"},
 ]
+faker = [
+    {file = "Faker-4.1.1-py3-none-any.whl", hash = "sha256:1290f589648bc470b8d98fff1fdff773fe3f46b4ca2cac73ac74668b12cf008e"},
+    {file = "Faker-4.1.1.tar.gz", hash = "sha256:c006b3664c270a2cfd4785c5e41ff263d48101c4e920b5961cf9c237131d8418"},
+]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
@@ -434,6 +469,10 @@ pymysql = [
     {file = "PyMySQL-0.9.2-py2.py3-none-any.whl", hash = "sha256:95f057328357e0e13a30e67857a8c694878b0175797a9a203ee7adbfb9b1ec5f"},
     {file = "PyMySQL-0.9.2.tar.gz", hash = "sha256:9ec760cbb251c158c19d6c88c17ca00a8632bac713890e465b2be01fdc30713f"},
 ]
+python-dateutil = [
+    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
+    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+]
 pyyaml = [
     {file = "PyYAML-5.3.1-cp27-cp27m-win32.whl", hash = "sha256:74809a57b329d6cc0fdccee6318f44b9b8649961fa73144a98735b0aaf029f1f"},
     {file = "PyYAML-5.3.1-cp27-cp27m-win_amd64.whl", hash = "sha256:240097ff019d7c70a4922b6869d8a86407758333f02203e0fc6ff79c5dcede76"},
@@ -450,6 +489,10 @@ pyyaml = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+text-unidecode = [
+    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
+    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
 ]
 trafaret = [
     {file = "trafaret-2.0.2-py3-none-any.whl", hash = "sha256:5d560577cb7f5ec015cdb9298e46ec07fd9e0224bc0aaecc7d0fa0e92ea251d9"},

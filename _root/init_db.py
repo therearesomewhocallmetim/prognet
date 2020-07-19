@@ -1,6 +1,6 @@
 import hashlib
 
-from _root.db import init_mysql, close_mysql
+from utils import database
 
 
 async def create_tables(conn):
@@ -36,10 +36,9 @@ async def sample_data(conn):
 
 
 async def main(app):
-    await init_mysql(app)
-    async with app['db'].acquire() as conn:
-        await create_tables(conn)
-        await sample_data(conn)
-        conn.close()
-    await close_mysql(app)
+    async with database(app):
+        async with app['db'].acquire() as conn:
+            await create_tables(conn)
+            await sample_data(conn)
+            conn.close()
 
