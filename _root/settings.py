@@ -15,7 +15,7 @@ def _get_config(path):
 
 def get_real_config(*path):
     config = {'base_dir': BASE_DIR, 'template_dirs': []}
-    for config_file in path:
+    for config_file in filter(None, path):
         config_path = config_dir / config_file
         config.update(_get_config(config_path))
     return config

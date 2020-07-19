@@ -1,4 +1,5 @@
 import asyncio
+from importlib import import_module
 
 import aiohttp_jinja2
 import click
@@ -11,9 +12,7 @@ from aiohttp_session import SimpleCookieStorage, session_middleware
 from _root import init_db
 from _root.db import close_mysql, init_mysql
 from _root.settings import get_real_config
-from auth import app as auth
 from auth.policies import SimpleAuthPolicy
-from polls import app as polls
 
 
 # thing
@@ -23,6 +22,19 @@ def plugin_app(app, prefix, nested):
     app.on_startup.append(set_db)
     app.add_subapp(prefix, nested)
 # / end of thing
+
+
+plugins = [
+    ('auth', '/auth/'),
+    ('polls', '/profiles/')
+]
+
+
+def load_plugins(root):
+    for application_name, prefix in plugins:
+        application_module = import_module(application_name)
+        application = application_module.app.get_app(root['config'])
+        plugin_app(root, prefix, application)
 
 
 @click.group()
@@ -39,13 +51,10 @@ def cli(ctx, config):
     app.on_startup.append(init_mysql)
     app.on_cleanup.append(close_mysql)
 
-
-    plugin_app(app, '/profiles/', polls.get_app(app['config']))
-    plugin_app(app, '/auth/', auth.get_app(app['config']))
+    load_plugins(app)
 
     aiohttp_jinja2.setup(
         app, loader=jinja2.FileSystemLoader(map(str, app['config']['template_dirs'])))
-
 
     # security
     policy = SessionIdentityPolicy()
