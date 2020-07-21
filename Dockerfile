@@ -9,4 +9,4 @@ RUN ~/.poetry/bin/poetry install -n
 
 EXPOSE 3000
 
-CMD  PYTHONPATH=. ~/.poetry/bin/poetry run python polls/main.py
+CMD  PYTHONPATH=. ~/.poetry/bin/poetry run _root/main.py --config=polls_local.yaml run
