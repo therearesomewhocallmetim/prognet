@@ -1,5 +1,5 @@
 db:
-  database: prognet_2
+  database: prognet
   user: root
   password: dude
   host: database
