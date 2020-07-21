@@ -26,6 +26,14 @@ async def create_tables(conn):
             ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
         """)
 
+        await cur.execute("""
+            create index first_name_idx on profiles(first_name);
+        """)
+        await cur.execute("""
+            create index last_name_idx on profiles(last_name);
+        """)
+
+
 
 async def sample_data(conn):
     async with conn.cursor() as cur:
