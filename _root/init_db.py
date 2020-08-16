@@ -33,6 +33,33 @@ async def create_tables(conn):
             create index last_name_idx on profiles(last_name);
         """)
 
+        await cur.execute("""
+            CREATE TABLE `messages` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `from` bigint DEFAULT NULL,
+              `to` bigint DEFAULT NULL,
+              `datetime` datetime DEFAULT NULL,
+              `text` text,
+              PRIMARY KEY (`id`),
+              KEY `from` (`from`),
+              KEY `to` (`to`),
+              CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`from`) REFERENCES `profiles` (`id`),
+              CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`to`) REFERENCES `profiles` (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci        
+        """)
+
+        await cur.execute("""
+            CREATE TABLE `followers` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `profile_id` bigint DEFAULT NULL,
+              `follows` bigint DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `profile_id` (`profile_id`,`follows`),
+              KEY `follows` (`follows`),
+              CONSTRAINT `followers_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`id`) ON DELETE CASCADE,
+              CONSTRAINT `followers_ibfk_2` FOREIGN KEY (`follows`) REFERENCES `profiles` (`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci        
+        """)
 
 
 async def sample_data(conn):
