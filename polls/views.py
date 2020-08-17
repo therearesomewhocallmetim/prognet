@@ -31,8 +31,8 @@ async def login_required(request):
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     async with request.app['db'].acquire() as conn:
-        # user_id = await login_required(request)
-        # await check_has_profile(user_id, conn)
+        user_id = await login_required(request)
+        await check_has_profile(user_id, conn)
         profiles = await Profile.get_all_names(conn)
         return {'profiles': profiles}
 
@@ -118,6 +118,9 @@ async def posts_post(request):
 async def list_posts(request):
     conn = request['conn']
     user_id = await login_required(request)
-    profile_id = await check_has_profile(user_id, conn)
+    if (profile_id_str := request.match_info.get('user_id')) is not None:
+        profile_id = int(profile_id_str)
+    else:
+        profile_id = await check_has_profile(user_id, conn)
     posts = await Post.get_by_author_id(conn, profile_id)
     return {'posts': posts}
