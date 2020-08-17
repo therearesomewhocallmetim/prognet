@@ -5,7 +5,7 @@ import aiohttp_jinja2
 from aiohttp import web
 from aiohttp_security import authorized_userid, check_authorized
 
-from polls.models import Post, Profile
+from polls.models import Post, Profile, Following
 
 
 def db(fn):
@@ -118,9 +118,34 @@ async def posts_post(request):
 async def list_posts(request):
     conn = request['conn']
     user_id = await login_required(request)
-    if (profile_id_str := request.match_info.get('user_id')) is not None:
+    if (profile_id_str := request.match_info.get('prof_id')) is not None:
         profile_id = int(profile_id_str)
     else:
         profile_id = await check_has_profile(user_id, conn)
     posts = await Post.get_by_author_id(conn, profile_id)
-    return {'posts': posts}
+    return {'posts': posts, 'profile_id': profile_id}
+
+
+@db
+async def follow(request):
+    conn = request['conn']
+    my_profile_id, profile_to_follow = await _follow_params(request, conn)
+    await Following.follow(conn, who=my_profile_id, whom=profile_to_follow)
+    await conn.commit()
+    raise web.HTTPFound(f'/profiles/posts/{profile_to_follow}')
+
+
+@db
+async def unfollow(request):
+    conn = request['conn']
+    my_profile_id, profile_to_follow = await _follow_params(request, conn)
+    await Following.unfollow(conn, who=my_profile_id, whom=profile_to_follow)
+    await conn.commit()
+    raise web.HTTPFound(f'/profiles/posts/{profile_to_follow}')
+
+
+async def _follow_params(request, conn):
+    user_id = await login_required(request)
+    my_profile_id = await check_has_profile(user_id, conn)
+    profile_to_follow = int(request.match_info.get('prof_id'))
+    return my_profile_id, profile_to_follow

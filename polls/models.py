@@ -36,6 +36,7 @@ class Profile:
                     last_name=data['last_name'], sex=data['gender'],
                     interests=data['interests'], city=data['city'], date_of_birth=data['birth']))
 
+
     @staticmethod
     async def search(conn, params):
         for key, val in params.items():
@@ -58,3 +59,20 @@ class Post:
     async def get_by_author_id(conn, author_id):
         posts = await select(conn, "SELECT * from posts where author_id = %s order by `datetime` desc", author_id)
         return posts
+
+
+class Following:
+    @staticmethod
+    async def follow(conn, who, whom):
+        sql = """insert ignore into followers (profile_id, follows) values(%(profile_id)s, %(follows)s);"""
+        async with conn.cursor() as cur:
+            await cur.execute(
+                sql, args=dict(profile_id=who, follows=whom))
+
+
+    @staticmethod
+    async def unfollow(conn, who, whom):
+        sql = """delete from followers where profile_id=%(profile_id)s and follows=%(follows)s;"""
+        async with conn.cursor() as cur:
+            await cur.execute(
+                sql, args=dict(profile_id=who, follows=whom))

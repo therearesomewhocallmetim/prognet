@@ -2,6 +2,7 @@
 {% block title %}Posts{% endblock %}
 
 {% block content %}
+<p><form method="POST" action="/profiles/{{profile_id}}/follow"><input type="submit" value="follow"></form> | <form method="POST" action="/profiles/{{profile_id}}/unfollow"><input type="submit" value="unfollow"></form></p>
     {% if posts %}
         <ul>
             {% for post in posts %}
