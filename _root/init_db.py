@@ -61,6 +61,18 @@ async def create_tables(conn):
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci        
         """)
 
+        await cur.execute("""
+            CREATE TABLE `posts` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `author_id` bigint DEFAULT NULL,
+              `text` varchar(140) DEFAULT NULL,
+              `datetime` datetime DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `author_id` (`author_id`),
+              CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+        """)
+
 
 async def sample_data(conn):
     async with conn.cursor() as cur:

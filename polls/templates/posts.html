@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+            <hr />
+            <p>{{ post.text  }}</p>
+            <p>{{ post.datetime }}</p>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no posts yet</p>
+    {% endif %}
+{% endblock %}

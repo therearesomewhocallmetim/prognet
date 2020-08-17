@@ -43,3 +43,18 @@ class Profile:
 
         query = "SELECT * FROM profiles where first_name like %(first_name)s and last_name like %(last_name)s ORDER BY id"
         return await select(conn, query, dict(params))
+
+
+class Post:
+    @staticmethod
+    async def save(conn, data):
+        sql = """INSERT INTO posts (author_id, `text`, `datetime`) values (%(author_id)s, %(text)s, NOW());"""
+        async with conn.cursor() as cur:
+            await cur.execute(
+                sql, args=dict(author_id=data['author_id'], text=data['text']))
+
+
+    @staticmethod
+    async def get_by_author_id(conn, author_id):
+        posts = await select(conn, "SELECT * from posts where author_id = %s order by `datetime` desc", author_id)
+        return posts
