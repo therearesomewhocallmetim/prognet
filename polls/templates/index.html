@@ -5,11 +5,30 @@
     {% if profiles %}
         <ul>
             {% for profile in profiles %}
-            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }}</a></li>
+            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }} {{ profile.is_followed }}</a></li>
             {% endfor %}
 
         </ul>
     {% else %}
         <p>There are no users in our network yet</p>
     {% endif %}
+<div id="newsfeed">
+    hello;;;
+</div>
+
+<script language="JavaScript">
+    ws = new WebSocket('ws://localhost:3000/profiles/ws');
+    ws.onopen = function(event) {
+        ws.send('hello')
+    };
+    ws.onmessage = function(event) {
+        el = document.getElementById('newsfeed');
+        el_html = el.innerHTML;
+        el_html = el_html + '\n' + event.data;
+        el.innerHTML = el_html;
+    };
+
+
+</script>
+
 {% endblock %}

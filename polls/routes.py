@@ -1,6 +1,6 @@
 from polls.views import (
     index, list_posts, posts_form, posts_post, profile_detail, profile_get,
-    profile_post, search_profiles, follow, unfollow)
+    profile_post, search_profiles, follow, unfollow, news_websocket_handler)
 
 
 def setup_routes(app):
@@ -18,3 +18,4 @@ def setup_routes(app):
 
     app.router.add_post('/{prof_id:\d+}/follow', follow)
     app.router.add_post('/{prof_id:\d+}/unfollow', unfollow)
+    app.router.add_get('/ws', news_websocket_handler)

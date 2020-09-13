@@ -1,8 +1,12 @@
+import asyncio
+import logging
 from datetime import date, datetime
 from functools import wraps
 
+import aiohttp
 import aiohttp_jinja2
 from aiohttp import web
+from aiohttp.web_ws import WebSocketResponse
 from aiohttp_security import authorized_userid, check_authorized
 
 from polls.models import Post, Profile, Following
@@ -32,9 +36,13 @@ async def login_required(request):
 async def index(request):
     async with request.app['db'].acquire() as conn:
         user_id = await login_required(request)
-        await check_has_profile(user_id, conn)
+        profile_id = await check_has_profile(user_id, conn)
         profiles = await Profile.get_all_names(conn)
-        return {'profiles': profiles}
+        for profile in profiles:
+            profile['is_followed'] = profile['profile_id'] == profile_id
+    await request.app['queue'].send(f'{datetime.now().timestamp()}')
+
+    return {'profiles': profiles}
 
 
 async def check_has_profile(user_id, conn):
@@ -149,3 +157,15 @@ async def _follow_params(request, conn):
     my_profile_id = await check_has_profile(user_id, conn)
     profile_to_follow = int(request.match_info.get('prof_id'))
     return my_profile_id, profile_to_follow
+
+
+async def news_websocket_handler(request):
+    # user_id = await login_required(request)
+    ws = WebSocketResponse()
+    await ws.prepare(request)
+    queue = request.app['queue']
+    async for msg in queue.receive():
+        await ws.send_str(msg)
+
+        logging.error(f'web socket sent msg {msg}')
+    return ws

@@ -13,7 +13,7 @@ class Profile:
 
     @staticmethod
     async def get_all_names(conn):
-        q = "SELECT first_name, last_name, user_id FROM profiles LIMIT 100;"
+        q = "select one.id, one.user_id, one.first_name, one.last_name, two.profile_id from profiles as one left join followers as two on two.follows = one.id LIMIT 100;"
         return await select(conn, q)
 
 
