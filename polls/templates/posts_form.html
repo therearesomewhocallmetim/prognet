@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<form action="/profiles/posts_post" method="POST">
+    <textarea name="text" placeholder="type your text here"></textarea>
+    <input type="submit" value=">>>">
+
+</form>
+{% endblock %}

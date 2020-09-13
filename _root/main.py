@@ -10,19 +10,18 @@ from aiohttp_security import setup as setup_security
 from aiohttp_session import SimpleCookieStorage, session_middleware
 
 from _root import init_db
-from _root.db import close_mysql, init_mysql
+from _root.db import close_mysql, close_queue, init_mysql, init_queue
 from _root.settings import get_real_config
 from auth.policies import SimpleAuthPolicy
 from fake_data.gen import generate
 
 
-# thing
 def plugin_app(app, prefix, nested):
     async def set_db(a):
-        nested['db'] = a['db']
+        for key, value in a.items():
+            nested[key] = value
     app.on_startup.append(set_db)
     app.add_subapp(prefix, nested)
-# / end of thing
 
 
 plugins = [
@@ -43,14 +42,17 @@ def load_plugins(root):
 @click.pass_context
 def cli(ctx, config):
     ctx.ensure_object(dict)
-    middleware = session_middleware(SimpleCookieStorage())
+    middleware = session_middleware(SimpleCookieStorage(httponly=False))
 
     app = web.Application(middlewares=[middleware])
     app.name = 'main'
 
     app['config'] = get_real_config('polls.yaml', config)
     app.on_startup.append(init_mysql)
+    app.on_startup.append(init_queue)
+
     app.on_cleanup.append(close_mysql)
+    app.on_cleanup.append(close_queue)
 
     load_plugins(app)
 

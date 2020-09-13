@@ -1,3 +1,6 @@
+from utils import last_id
+
+
 class User:
 
     @staticmethod
@@ -6,6 +9,4 @@ class User:
 
         async with conn.cursor() as cur:
             await cur.execute(statement, (login, password))
-            await cur.execute('SELECT LAST_INSERT_ID();')
-            last_id = (await cur.fetchone())[0]
-        return last_id
+            return await last_id(cur)
