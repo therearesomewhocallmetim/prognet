@@ -16,14 +16,12 @@ from auth.policies import SimpleAuthPolicy
 from fake_data.gen import generate
 
 
-# thing
 def plugin_app(app, prefix, nested):
     async def set_db(a):
-        nested['db'] = a['db']
-        nested['queue'] = a['queue']
+        for key, value in a.items():
+            nested[key] = value
     app.on_startup.append(set_db)
     app.add_subapp(prefix, nested)
-# / end of thing
 
 
 plugins = [
@@ -44,7 +42,7 @@ def load_plugins(root):
 @click.pass_context
 def cli(ctx, config):
     ctx.ensure_object(dict)
-    middleware = session_middleware(SimpleCookieStorage())
+    middleware = session_middleware(SimpleCookieStorage(httponly=False))
 
     app = web.Application(middlewares=[middleware])
     app.name = 'main'

@@ -1,7 +1,7 @@
-import logging
 from datetime import date, datetime
 from functools import wraps
 
+import aiohttp
 import aiohttp_jinja2
 from aiohttp import web
 from aiohttp.web_ws import WebSocketResponse
@@ -112,10 +112,22 @@ async def posts_post(request):
     data = await request.post()
     user_id = await login_required(request)
     async with request.app['db'].acquire() as conn:
-        profile_id = await check_has_profile(user_id, conn)
-        data = {'text': data['text'], 'author_id': profile_id}
-        await Post.save(conn, data)
+        profile = await Profile.get_by_user_id(conn, user_id)
+        data = {'text': data['text'], 'author_id': profile['id'], }
+        pk = await Post.save(conn, data)
+
         await conn.commit()
+    await request.app['queue'].send(
+        {
+            'text': data['text'],
+            'id': pk,
+            'profile': {
+                'id': profile['id'],
+                'first_name': profile['first_name'],
+                'last_name': profile['last_name']
+            }
+        })
+
     raise web.HTTPFound('/profiles/posts')
 
 
@@ -130,6 +142,15 @@ async def list_posts(request):
         profile_id = await check_has_profile(user_id, conn)
     posts = await Post.get_by_author_id(conn, profile_id)
     return {'posts': posts, 'profile_id': profile_id}
+
+
+@aiohttp_jinja2.template('post.html')
+@db
+async def get_post(request):
+    conn = request['conn']
+    post_id = request.match_info.get('post_id')
+    post = await Post.get_by_id(conn, post_id)
+    return {'post': post[0]}
 
 
 @db
@@ -157,13 +178,25 @@ async def _follow_params(request, conn):
     return my_profile_id, profile_to_follow
 
 
+@db
 async def news_websocket_handler(request):
-    # user_id = await login_required(request)
     ws = WebSocketResponse()
     await ws.prepare(request)
+    async for ws_msg in ws:
+        if ws_msg.type == aiohttp.WSMsgType.TEXT:
+            profile_id = await check_has_profile(ws_msg.data, request['conn'])
+            followed_by = await Following.followed_by(request['conn'], profile_id)
+            followed_by = [x['follows'] for x in followed_by]
+        else:
+            followed_by = []
+        break
+
     queue = request.app['queue']
     async for msg in queue.receive():
-        await ws.send_str(msg)
-
-        logging.error(f'web socket sent msg {msg}')
+        if msg['profile']['id'] in followed_by:
+            name = f'{msg["profile"]["first_name"]} {msg["profile"]["last_name"]}'
+            await ws.send_str(f'''
+                <p>
+                    <a href="/profiles/post/{msg["id"]}">{msg["text"][:50]}...</a> by
+                    <a href="{msg["profile"]["id"]}">{name}</a></p>''')
     return ws

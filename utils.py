@@ -18,6 +18,6 @@ async def database(app):
     await close_mysql(app)
 
 
-# async def last_id(cur):
-#     await cur.execute('SELECT LAST_INSERT_ID();')
-#     return (await cur.fetchone())[0]
+async def last_id(cur):
+    await cur.execute('SELECT LAST_INSERT_ID();')
+    return (await cur.fetchone())[0]

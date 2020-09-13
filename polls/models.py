@@ -1,4 +1,4 @@
-from utils import select
+from utils import select, last_id
 
 
 class Profile:
@@ -53,12 +53,21 @@ class Post:
         async with conn.cursor() as cur:
             await cur.execute(
                 sql, args=dict(author_id=data['author_id'], text=data['text']))
+            return await last_id(cur)
+            # await cur.execute('SELECT LAST_INSERT_ID();')
+            # last_id = (await cur.fetchone())[0]
+            # return last_id
 
 
     @staticmethod
     async def get_by_author_id(conn, author_id):
         posts = await select(conn, "SELECT * from posts where author_id = %s order by `datetime` desc", author_id)
         return posts
+
+
+    @staticmethod
+    async def get_by_id(conn, pk):
+        return await select(conn, "select * from posts where id=%s", pk)
 
 
 class Following:
@@ -76,3 +85,10 @@ class Following:
         async with conn.cursor() as cur:
             await cur.execute(
                 sql, args=dict(profile_id=who, follows=whom))
+
+
+    @staticmethod
+    async def followed_by(conn, who):
+        sql = """select follows from followers where profile_id=%(who)s;"""
+        # async with conn.cursor() as cur:
+        return await select(conn, sql, dict(who=who))

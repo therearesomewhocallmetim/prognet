@@ -1,3 +1,4 @@
+import json
 import logging
 from collections import namedtuple
 
@@ -33,26 +34,28 @@ async def init_queue(app):
 
     async def send(msg):
         async with channel_pool.acquire() as channel:
+            text = json.dumps(msg, ensure_ascii=False).encode()
             await channel.default_exchange.publish(
-                aio_pika.Message(msg.encode()), queue_name)
+                aio_pika.Message(text), queue_name)
 
     async def receive():
         async with channel_pool.acquire() as channel:
             await channel.set_qos(10)
-            queue = await channel.declare_queue(queue_name, durable=False, auto_delete=True)
+            queue = await channel.declare_queue(
+                queue_name, durable=False, auto_delete=True)
             async with queue.iterator() as queue_iter:
                 async for message in queue_iter:
-                    yield f'message: {message.body}'
+                    yield json.loads(message.body)
                     await message.ack()
 
     async def close():
         await channel_pool.close()
         await connection_pool.close()
-        logging.error('we are inside the close function')
 
     Sender = namedtuple('Sender', 'send, receive, close')
     app['queue'] = Sender(close=close, send=send, receive=receive)
 
+
 async def close_queue(app):
     await app['queue'].close()
-    logging.error('closing the queue')
+    logging.info('closing the queue')

@@ -13,13 +13,34 @@
         <p>There are no users in our network yet</p>
     {% endif %}
 <div id="newsfeed">
-    hello;;;
+    <hr />
+    <p>Newsfeed:</p>
 </div>
 
 <script language="JavaScript">
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+    s = getCookie("AIOHTTP_SESSION")
+    u = s.replace("\\054",",").replaceAll('\\', '').replace('\"{', '{').replace('}\"', '}')
+    u = JSON.parse(u)
+    user_id = u['session']['AIOHTTP_SECURITY']
+
     ws = new WebSocket('ws://localhost:3000/profiles/ws');
     ws.onopen = function(event) {
-        ws.send('hello')
+        ws.send(user_id)
     };
     ws.onmessage = function(event) {
         el = document.getElementById('newsfeed');
