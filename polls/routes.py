@@ -1,6 +1,6 @@
 from polls.views import (
-    index, list_posts, posts_form, posts_post, profile_detail, profile_get,
-    profile_post, search_profiles, follow, unfollow, news_websocket_handler)
+    follow, index, list_posts, news_websocket_handler, posts_form, posts_post,
+    profile_detail, profile_get, profile_post, search_profiles, unfollow)
 
 
 def setup_routes(app):

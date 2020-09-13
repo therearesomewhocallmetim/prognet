@@ -7,7 +7,7 @@ from aiohttp import web
 from aiohttp.web_ws import WebSocketResponse
 from aiohttp_security import authorized_userid, check_authorized
 
-from polls.models import Post, Profile, Following
+from polls.models import Following, Post, Profile
 
 
 def db(fn):

@@ -10,7 +10,7 @@ from aiohttp_security import setup as setup_security
 from aiohttp_session import SimpleCookieStorage, session_middleware
 
 from _root import init_db
-from _root.db import close_mysql, init_mysql, init_queue, close_queue
+from _root.db import close_mysql, close_queue, init_mysql, init_queue
 from _root.settings import get_real_config
 from auth.policies import SimpleAuthPolicy
 from fake_data.gen import generate
