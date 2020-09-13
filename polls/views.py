@@ -1,9 +1,7 @@
-import asyncio
 import logging
 from datetime import date, datetime
 from functools import wraps
 
-import aiohttp
 import aiohttp_jinja2
 from aiohttp import web
 from aiohttp.web_ws import WebSocketResponse
