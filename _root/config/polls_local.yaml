@@ -6,3 +6,6 @@ db:
   port: 3306
   minsize: 1
   maxsize: 5
+
+rabbit:
+  urn: amqp://guest:guest@localhost/

@@ -21,7 +21,8 @@ async def close_mysql(app):
 
 async def init_queue(app):
     async def get_connection():
-        return await aio_pika.connect_robust("amqp://guest:guest@127.0.0.1/")
+        urn = app['config']['rabbit']['urn']
+        return await aio_pika.connect_robust(urn)
 
     connection_pool = aio_pika.pool.Pool(get_connection, max_size=2, loop=app.loop)
 
