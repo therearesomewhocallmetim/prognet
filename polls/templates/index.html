@@ -38,7 +38,7 @@ function getCookie(cname) {
     u = JSON.parse(u)
     user_id = u['session']['AIOHTTP_SECURITY']
 
-    ws = new WebSocket('ws://localhost:3000/profiles/ws');
+    ws = new WebSocket('ws://' + window.location.hostname + '/profiles/ws');
     ws.onopen = function(event) {
         ws.send(user_id)
     };
