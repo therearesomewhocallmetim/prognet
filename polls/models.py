@@ -12,9 +12,9 @@ class Profile:
 
 
     @staticmethod
-    async def get_all_names(conn):
-        q = "select one.id, one.user_id, one.first_name, one.last_name, two.profile_id from profiles as one left join followers as two on two.follows = one.id LIMIT 100;"
-        return await select(conn, q)
+    async def get_all_names(conn, exclude=0):
+        q = "select id, user_id, first_name, last_name from profiles where id != %(exclude)s LIMIT 100;"
+        return await select(conn, q, {'exclude': exclude})
 
 
     @staticmethod

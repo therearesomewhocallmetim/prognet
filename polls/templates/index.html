@@ -2,19 +2,21 @@
 {% block title %}Profiles{% endblock %}
 
 {% block content %}
+    {{ my_profile.first_name }} {{ my_profile.last_name }}
+
     {% if profiles %}
         <ul>
             {% for profile in profiles %}
-            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }} {{ profile.is_followed }}</a></li>
+            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }} {{ "Following" if profile.is_followed }}</a></li>
             {% endfor %}
 
         </ul>
     {% else %}
         <p>There are no users in our network yet</p>
     {% endif %}
+<hr />
+<p>Newsfeed:</p>
 <div id="newsfeed">
-    <hr />
-    <p>Newsfeed:</p>
 </div>
 
 <script language="JavaScript">
@@ -38,16 +40,43 @@ function getCookie(cname) {
     u = JSON.parse(u)
     user_id = u['session']['AIOHTTP_SECURITY']
 
-    ws = new WebSocket('ws://' + window.location.hostname + '/profiles/ws');
-    ws.onopen = function(event) {
-        ws.send(user_id)
-    };
-    ws.onmessage = function(event) {
+function getWebSocketUrl() {
+    port = window.location.port;
+    if (port == '80' || port == '443') {
+        port = '';
+    } else {
+        port = ':' + port
+    }
+    return 'ws://' + window.location.hostname + port + '/profiles/ws';
+}
+
+function connect() {
+  var ws = new WebSocket(getWebSocketUrl());
+  ws.onopen = function() {
+    ws.send(user_id);
+  };
+
+  ws.onmessage = function(event) {
         el = document.getElementById('newsfeed');
         el_html = el.innerHTML;
-        el_html = el_html + '\n' + event.data;
+        el_html = event.data + '\n' + el_html;
         el.innerHTML = el_html;
     };
+
+  ws.onclose = function(e) {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+      connect();
+    }, 1000);
+  };
+
+  ws.onerror = function(err) {
+    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
+}
+
+connect();
 
 
 </script>

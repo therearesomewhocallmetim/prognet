@@ -34,13 +34,19 @@ async def login_required(request):
 async def index(request):
     async with request.app['db'].acquire() as conn:
         user_id = await login_required(request)
-        profile_id = await check_has_profile(user_id, conn)
-        profiles = await Profile.get_all_names(conn)
+        my_profile = await Profile.get_by_user_id(conn, user_id)
+        if not my_profile:
+            raise web.HTTPFound('/profiles/me')
+        profiles = await Profile.get_all_names(conn, my_profile['id'])
+        followed = await followed_profiles(conn, my_profile['id'])
         for profile in profiles:
-            profile['is_followed'] = profile['profile_id'] == profile_id
+            profile['is_followed'] = profile['id'] in followed
     await request.app['queue'].send(f'{datetime.now().timestamp()}')
 
-    return {'profiles': profiles}
+    return {
+        'profiles': profiles,
+        'my_profile': {
+            'first_name': my_profile['first_name'], 'last_name': my_profile['last_name']}}
 
 
 async def check_has_profile(user_id, conn):
@@ -182,21 +188,23 @@ async def _follow_params(request, conn):
 async def news_websocket_handler(request):
     ws = WebSocketResponse()
     await ws.prepare(request)
+    profile_id = 0
     async for ws_msg in ws:
         if ws_msg.type == aiohttp.WSMsgType.TEXT:
             profile_id = await check_has_profile(ws_msg.data, request['conn'])
-            followed_by = await Following.followed_by(request['conn'], profile_id)
-            followed_by = [x['follows'] for x in followed_by]
-        else:
-            followed_by = []
         break
 
     queue = request.app['queue']
     async for msg in queue.receive():
-        if msg['profile']['id'] in followed_by:
+        if msg['profile']['id'] in await followed_profiles(request['conn'], profile_id):
             name = f'{msg["profile"]["first_name"]} {msg["profile"]["last_name"]}'
             await ws.send_str(f'''
                 <p>
                     <a href="/profiles/post/{msg["id"]}">{msg["text"][:50]}...</a> by
                     <a href="{msg["profile"]["id"]}">{name}</a></p>''')
     return ws
+
+
+async def followed_profiles(conn, profile_id):
+    followed = await Following.followed_by(conn, profile_id)
+    return [x['follows'] for x in followed]
