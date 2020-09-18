@@ -36,7 +36,7 @@ function getCookie(cname) {
   return "";
 }
     s = getCookie("AIOHTTP_SESSION")
-    u = s.replace("\\054",",").replaceAll('\\', '').replace('\"{', '{').replace('}\"', '}')
+    u = s.replace("\\054",",").replace(/\\/g, '').replace('\"{', '{').replace('}\"', '}')
     u = JSON.parse(u)
     user_id = u['session']['AIOHTTP_SECURITY']
 
