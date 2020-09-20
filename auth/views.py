@@ -1,3 +1,4 @@
+import binascii
 import hashlib
 
 import aiohttp_jinja2
@@ -6,6 +7,7 @@ from aiohttp_security import (
     authorized_userid, check_authorized, forget, remember)
 from pymysql import IntegrityError
 
+from auth.policies import identity_from_token
 from utils import select
 
 
@@ -70,3 +72,13 @@ async def register(request):
                 raise redirect_response
             except IntegrityError:
                 raise web.HTTPFound('/auth/login')
+
+
+async def get_user_id_by_token(request):
+    token = request.headers.get('Authorization')
+    bearer, _, token = token.partition(' ')
+    try:
+        user_id = await identity_from_token(token)
+    except binascii.Error:
+        raise web.HTTPUnauthorized
+    return web.json_response({'user_id': user_id})

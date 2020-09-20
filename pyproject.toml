@@ -17,6 +17,7 @@ click = "^7.1.2"
 faker = "^4.1.1"
 phonenumbers = "^8.12.9"
 aio_pika = "^6.7.0"
+pyjwt = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.0.4"

@@ -7,6 +7,7 @@ from aiohttp import web
 from aiohttp.web_ws import WebSocketResponse
 from aiohttp_security import authorized_userid, check_authorized
 
+from auth.policies import identity_from_token
 from polls.models import Following, Post, Profile
 
 
@@ -191,7 +192,9 @@ async def news_websocket_handler(request):
     profile_id = 0
     async for ws_msg in ws:
         if ws_msg.type == aiohttp.WSMsgType.TEXT:
-            profile_id = await check_has_profile(ws_msg.data, request['conn'])
+            token = ws_msg.data
+            identity = await identity_from_token(token)
+            profile_id = await check_has_profile(identity, request['conn'])
         break
 
     queue = request.app['queue']

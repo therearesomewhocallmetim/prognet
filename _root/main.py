@@ -12,7 +12,7 @@ from aiohttp_session import SimpleCookieStorage, session_middleware
 from _root import init_db
 from _root.db import close_mysql, close_queue, init_mysql, init_queue
 from _root.settings import get_real_config
-from auth.policies import SimpleAuthPolicy
+from auth.policies import SimpleAuthPolicy, JWTSessionIdentityPolicy
 from fake_data.gen import generate
 
 
@@ -60,7 +60,7 @@ def cli(ctx, config):
         app, loader=jinja2.FileSystemLoader(map(str, app['config']['template_dirs'])))
 
     # security
-    policy = SessionIdentityPolicy()
+    policy = JWTSessionIdentityPolicy()
     setup_security(app, policy, SimpleAuthPolicy())
 
     ctx.obj['APP'] = app
