@@ -41,7 +41,7 @@ class JWTSessionIdentityPolicy(AbstractIdentityPolicy):
 
     async def remember(self, request, response, identity, **kwargs):
         jwt_token = jwt.encode(
-            {'identity': identity, 'random_string': ''.join(random.choices(string.ascii_letters, k=100))},
+            {'identity': identity, 'random_string': ''.join(random.choices(string.ascii_letters, k=5))},
             'insecure_shared_secret', algorithm='HS256')
 
         session = await get_session(request)

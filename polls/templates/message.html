@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Message {{ to.first_name }} {{ to.last_name }} {% endblock %}
+
+{% block content %}
+    {{ my_profile.first_name }} {{ my_profile.last_name }}
+
+<br /><input type="text" style='width:800px' placeholder="your message here" id="send_msg">
+
+<div id="chat_box">
+
+
+</div>
+
+<script   src="https://code.jquery.com/jquery-3.5.1.min.js"   integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="   crossorigin="anonymous"></script>
+<script>
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+function appendChatMsg(messages) {
+    msg = '';
+    messages.forEach(function(message) {
+        msg += '<p>';
+        if(message.to == {{ to.id }}) {
+            msg += 'me: ' + message.on + ' :: ' + message.message;
+        }
+        if(message.from == {{ to.id }}) {
+            msg += '{{ to.first_name }} {{ to.last_name }}: ' + message.on + ' :: ' + message.message;
+        }
+        msg += '</p>\n';
+    });
+    $('#chat_box').html(msg);
+
+}
+
+
+    s = getCookie("AIOHTTP_SESSION")
+    u = s.replace(/\\054/g,",").replace(/\\/g, '').replace('\"{', '{').replace('}\"', '}')
+    u = JSON.parse(u)
+    user_id = u['session']['JWT_TOKEN']
+
+    function getMessages() {
+         data = $.ajax({
+            url: 'http://localhost:3001/messages/message/{{to.id}}',
+            success: function(data) {
+                appendChatMsg(data.messages);
+            },
+            beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + user_id);},
+        });
+    }
+    var x = setInterval(getMessages, 1000);
+
+    $(document).ready(
+        function() {
+            getMessages();
+            $("#send_msg").on('keyup', function (e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    $.ajax({
+                        type: "POST",
+                        url: 'http://localhost:3001/messages/message',
+                        success: function(data) {
+                            getMessages();
+                        },
+                        data: JSON.stringify({message: $("#send_msg").val(), to: {{ to.id }} }),
+                        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + user_id);},
+                });
+            }
+        })});
+</script>
+{% endblock %}

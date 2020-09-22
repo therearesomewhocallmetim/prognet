@@ -211,3 +211,18 @@ async def news_websocket_handler(request):
 async def followed_profiles(conn, profile_id):
     followed = await Following.followed_by(conn, profile_id)
     return [x['follows'] for x in followed]
+
+
+@db
+@aiohttp_jinja2.template('message.html')
+async def message(request):
+    user_id = await login_required(request)
+    profile = await Profile.get_by_user_id(request['conn'], user_id)
+    if not profile:
+        raise web.HTTPFound('/profiles/me')
+
+    to = request.query
+    to = to.get('to')
+    to = await Profile.get_by_user_id(request['conn'], to)
+
+    return {'my_profile': profile, 'to': to}
