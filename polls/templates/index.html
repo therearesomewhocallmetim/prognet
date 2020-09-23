@@ -7,7 +7,10 @@
     {% if profiles %}
         <ul>
             {% for profile in profiles %}
-            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }} {{ "Following" if profile.is_followed }}</a></li>
+            <li><a href="/profiles/{{ profile.user_id  }}">{{ profile.first_name }} {{ profile.last_name }}</a>
+                {{ "Following" if profile.is_followed }}
+                <a href="/profiles/message?to={{ profile.user_id }}" >Chat</a>
+            </li>
             {% endfor %}
 
         </ul>

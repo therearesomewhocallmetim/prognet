@@ -34,10 +34,10 @@ function appendChatMsg(messages) {
     msg = '';
     messages.forEach(function(message) {
         msg += '<p>';
-        if(message.to == {{ to.id }}) {
+        if(message.to == {{ to.user_id }}) {
             msg += 'me: ' + message.on + ' :: ' + message.message;
         }
-        if(message.from == {{ to.id }}) {
+        if(message.from == {{ to.user_id }}) {
             msg += '{{ to.first_name }} {{ to.last_name }}: ' + message.on + ' :: ' + message.message;
         }
         msg += '</p>\n';
@@ -54,7 +54,7 @@ function appendChatMsg(messages) {
 
     function getMessages() {
          data = $.ajax({
-            url: '{{messages_host}}messages/message/{{to.id}}',
+            url: '{{messages_host}}messages/message/{{to.user_id}}',
             success: function(data) {
                 appendChatMsg(data.messages);
             },
@@ -73,8 +73,9 @@ function appendChatMsg(messages) {
                         url: '{{messages_host}}messages/message',
                         success: function(data) {
                             getMessages();
+                            $("#send_msg").val('');
                         },
-                        data: JSON.stringify({message: $("#send_msg").val(), to: {{ to.id }} }),
+                        data: JSON.stringify({message: $("#send_msg").val(), to: {{ to.user_id }} }),
                         beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + user_id);},
                 });
             }
