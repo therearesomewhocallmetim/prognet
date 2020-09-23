@@ -16,6 +16,13 @@ services:
     depends_on:
       - database
 
+ messages:
+   image: __some__image
+   ports:
+     - "8080:3000"
+  depends_on:
+    - database
+
   rabbit:
     image: "rabbitmq:3-management"
     ports:

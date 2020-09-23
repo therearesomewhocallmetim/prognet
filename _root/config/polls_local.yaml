@@ -9,3 +9,6 @@ db:
 
 rabbit:
   urn: amqp://guest:guest@localhost/
+
+messages:
+  host: http://localhost:3001/

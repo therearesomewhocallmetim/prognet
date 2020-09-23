@@ -225,4 +225,7 @@ async def message(request):
     to = to.get('to')
     to = await Profile.get_by_user_id(request['conn'], to)
 
-    return {'my_profile': profile, 'to': to}
+    return {
+        'my_profile': profile,
+        'to': to,
+        'messages_host': request.app['config']['messages']['host']}

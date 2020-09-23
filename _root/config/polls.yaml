@@ -9,3 +9,6 @@ db:
 
 rabbit:
   urn: amqp://guest:guest@rabbit/
+
+messages:
+  host: http://ec2-18-222-32-142.us-east-2.compute.amazonaws.com:8080/
